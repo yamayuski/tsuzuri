@@ -1,9 +1,8 @@
 import loader from "@monaco-editor/loader";
-import type { Signal } from "@preact/signals";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef } from "react";
 
 type Props = {
-  source: Signal<string>;
+  source: string;
 };
 
 export default function Monaco({ source }: Props) {
@@ -14,11 +13,11 @@ export default function Monaco({ source }: Props) {
 
     loader.init().then((monaco) => {
       editor = monaco.editor.create(containerRef.current!, {
-        value: source.value,
+        value: source,
         language: "markdown",
       });
       editor.onDidChangeModelContent(() => {
-        source.value = editor.getValue();
+        source = editor.getValue();
       });
     });
 
@@ -27,5 +26,5 @@ export default function Monaco({ source }: Props) {
     };
   }, [source]);
 
-  return <div ref={containerRef} class="w-full h-full" />;
+  return <div ref={containerRef} className="w-full h-full" />;
 }

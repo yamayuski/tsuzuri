@@ -1,0 +1,15 @@
+{
+  "name": "@tsuzuri/makimono",
+  "description": "Immutable Smart CRDT Persistent store",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

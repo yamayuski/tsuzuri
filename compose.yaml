@@ -1,3 +1,5 @@
+name: tsuzuri
+
 services:
   app:
     build:
@@ -7,7 +9,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./:/app
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/app
     networks:
       - default
 

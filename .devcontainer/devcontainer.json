@@ -32,7 +32,7 @@
     "ghcr.io/devcontainers/features/github-cli": {
       "version": "latest"
     },
-    "ghcr.io/devcontainers-extra/features/deno:1": {
+    "ghcr.io/devcontainers/features/go:1": {
       "version": "latest"
     }
   },
@@ -41,7 +41,8 @@
       "extensions": [
         "-eslint.vscode-eslint",
         "-prettier.prettier-vscode",
-        "denoland.vscode-deno",
+        "biomejs.biome",
+        "-denoland.vscode-deno",
         "bradlc.vscode-tailwindcss",
         "github.copilot",
         "github.copilot-chat",
@@ -61,18 +62,18 @@
         },
         "deno.enable": true,
         "deno.lint": true,
-        "editor.defaultFormatter": "denoland.vscode-deno",
+        "editor.defaultFormatter": "biomejs.biome",
         "[typescriptreact]": {
-          "editor.defaultFormatter": "denoland.vscode-deno"
+          "editor.defaultFormatter": "biomejs.biome"
         },
         "[typescript]": {
-          "editor.defaultFormatter": "denoland.vscode-deno"
+          "editor.defaultFormatter": "biomejs.biome"
         },
         "[javascriptreact]": {
-          "editor.defaultFormatter": "denoland.vscode-deno"
+          "editor.defaultFormatter": "biomejs.biome"
         },
         "[javascript]": {
-          "editor.defaultFormatter": "denoland.vscode-deno"
+          "editor.defaultFormatter": "biomejs.biome"
         },
         "[json]": {
           "editor.defaultFormatter": "biomejs.biome"
@@ -82,7 +83,7 @@
             "strings": true
           },
           "editor.suggest.insertMode": "replace",
-          "editor.defaultFormatter": "denoland.vscode-deno"
+          "editor.defaultFormatter": "biomejs.biome"
         },
         "files.associations": {
           "*.css": "tailwindcss"

@@ -100,3 +100,5 @@ chown -R ${USER_UID}:${USER_GID} /commandhistory
 EOL
 
 USER ${USERNAME}
+
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -

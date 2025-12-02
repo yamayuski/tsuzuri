@@ -1,46 +1,26 @@
-# @link https://docs.deno.com/runtime/reference/docker/
-# @link https://fresh.deno.dev/docs/deployment/docker
-
-FROM mirror.gcr.io/denoland/deno:latest AS dev
+FROM mirror.gcr.io/node:24 AS dev
 
 WORKDIR /app
 
 VOLUME [ "/app" ]
 
-ENV DENO_ENV=development
+ENV NODE_ENV=development
 
-CMD ["deno", "task", "dev"]
+ARG USERNAME=node
+ARG USER_UID=1000
+ARG USER_GID=1000
+ARG TZ=UTC
+ARG LANGUAGE=en
+ARG COUNTRY=US
+ARG ENCODING=UTF-8
+ARG LOCALE="en_US.UTF-8 UTF-8"
 
+USER ${USERNAME}
 
+SHELL [ "/bin/bash", "-c" ]
 
-FROM mirror.gcr.io/denoland/deno:latest AS builder
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
-ARG GIT_REVISION
-ENV DENO_DEPLOYMENT_ID=${GIT_REVISION}
+ENV PATH="/home/${USERNAME}/.local/share/pnpm:$PATH"
 
-WORKDIR /app
-
-COPY . .
-RUN \
-    deno install \
-    && deno task build \
-    && deno cache _fresh/server.js
-
-
-
-FROM mirror.gcr.io/denoland/deno:distroless AS prod
-
-ENV DENO_NO_UPDATE_CHECK=1 \
-    DENO_NO_PROMPT=1 \
-    DENO_ENV=production \
-    PORT=8000 \
-    HOSTNAME=localhost
-
-WORKDIR /app
-
-COPY --chown=nonroot:nonroot --from=builder /app/_fresh/ /app/_fresh/
-
-USER nonroot
-EXPOSE ${PORT}
-
-CMD ["serve", "-A", "_fresh/server.js"]
+CMD ["pnpm", "dev"]
