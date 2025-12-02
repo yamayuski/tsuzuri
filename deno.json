@@ -20,6 +20,7 @@
   ],
   "imports": {
     "@/": "./",
+    "@monaco-editor/loader": "npm:@monaco-editor/loader@^1.7.0",
     "daisyui": "npm:daisyui@^5.5.5",
     "fresh": "jsr:@fresh/core@^2.2.0",
     "preact": "npm:preact@^10.27.2",

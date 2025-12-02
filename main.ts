@@ -1,9 +1,14 @@
-import { App, staticFiles } from "fresh";
+import { App, cors, staticFiles } from "fresh";
 import { define, type State } from "./utils.ts";
 
 export const app = new App<State>();
 
 app.use(staticFiles());
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  allowMethods: ["OPTIONS", "GET", "POST"],
+}));
 
 // Pass a shared value from a middleware
 app.use(async (ctx) => {

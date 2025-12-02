@@ -29,6 +29,7 @@
     "npm:@babel/core@^7.28.0": "7.28.5",
     "npm:@babel/preset-react@^7.27.1": "7.28.5_@babel+core@7.28.5",
     "npm:@mjackson/node-fetch-server@0.7": "0.7.0",
+    "npm:@monaco-editor/loader@^1.7.0": "1.7.0",
     "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:@preact/signals@^2.2.1": "2.5.1_preact@10.28.0",
     "npm:@preact/signals@^2.5.0": "2.5.1_preact@10.28.0",
@@ -505,6 +506,12 @@
     },
     "@mjackson/node-fetch-server@0.7.0": {
       "integrity": "sha512-un8diyEBKU3BTVj3GzlTPA1kIjCkGdD+AMYQy31Gf9JCkfoZzwgJ79GUtHrF2BN3XPNMLpubbzPcxys+a3uZEw=="
+    },
+    "@monaco-editor/loader@1.7.0": {
+      "integrity": "sha512-gIwR1HrJrrx+vfyOhYmCZ0/JcWqG5kbfG7+d3f/C1LXk2EvzAbHSg3MQ5lO2sMlo9izoAZ04shohfKLVT6crVA==",
+      "dependencies": [
+        "state-local"
+      ]
     },
     "@opentelemetry/api@1.9.0": {
       "integrity": "sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg=="
@@ -1048,6 +1055,9 @@
     "source-map-js@1.2.1": {
       "integrity": "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="
     },
+    "state-local@1.0.7": {
+      "integrity": "sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w=="
+    },
     "tailwindcss@4.1.17": {
       "integrity": "sha512-j9Ee2YjuQqYT9bbRTfTZht9W/ytp5H+jJpZKiYdP/bpnXARAuELt9ofP0lPnmHjbga7SNQIxdTAXCmtKVYjN+Q=="
     },
@@ -1100,6 +1110,7 @@
     "dependencies": [
       "jsr:@fresh/core@^2.2.0",
       "jsr:@fresh/plugin-vite@^1.0.8",
+      "npm:@monaco-editor/loader@^1.7.0",
       "npm:@preact/signals@^2.5.0",
       "npm:@tailwindcss/vite@^4.1.12",
       "npm:daisyui@^5.5.5",
