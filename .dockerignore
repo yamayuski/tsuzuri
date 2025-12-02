@@ -1,0 +1,8 @@
+.devcontainer/
+.git/
+.github/
+.vscode/
+node_modules/
+_build/
+Dockerfile
+README.md

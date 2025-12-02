@@ -1,0 +1,93 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.schema.json",
+  "name": "Tsuzuri Dev workspace",
+  "init": true,
+  "dockerComposeFile": ["../compose.yaml", "./compose.yaml"],
+  "service": "workspace",
+  "runServices": ["app"],
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "${localEnv:USERNAME:node}",
+  "containerUser": "${localEnv:USERNAME:node}",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder:/workspace}"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils": {
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": false,
+      "installZsh": false,
+      "upgradePackages": true,
+      "username": "${localEnv:USERNAME:node}",
+      "userUid": "${localEnv:USER_UID:1000}",
+      "userGid": "${localEnv:USER_GID:1000}"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker": {
+      "moby": false,
+      "installDockerComposeSwitch": false
+    },
+    "ghcr.io/devcontainers/features/git": {
+      "version": "system"
+    },
+    "ghcr.io/devcontainers/features/github-cli": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-extra/features/deno:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "-eslint.vscode-eslint",
+        "-prettier.prettier-vscode",
+        "denoland.vscode-deno",
+        "bradlc.vscode-tailwindcss",
+        "github.copilot",
+        "github.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "DavidAnson.vscode-markdownlint",
+        "ms-azuretools.vscode-containers",
+        "docker.docker",
+        "EditorConfig.EditorConfig",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "typescript.preferences.includePackageJsonAutoImports": "on",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit",
+          "source.fixAll": "explicit"
+        },
+        "deno.enable": true,
+        "deno.lint": true,
+        "editor.defaultFormatter": "denoland.vscode-deno",
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[jsonc]": {
+          "editor.quickSuggestions": {
+            "strings": true
+          },
+          "editor.suggest.insertMode": "replace",
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "files.associations": {
+          "*.css": "tailwindcss"
+        }
+      }
+    }
+  }
+}
