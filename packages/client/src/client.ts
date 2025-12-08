@@ -163,11 +163,14 @@ export class WikiClient {
   private handleLocalEdit(): void {
     if (!this.crdt || !this.docId) return;
 
-    // For now, we'll send a placeholder operation
-    // In a real implementation, we would:
-    // 1. Calculate the diff between old and new content
-    // 2. Generate appropriate insert/delete operations
-    // 3. Sign and send them
+    // TODO: Implement operation generation from text diffs
+    // Required steps:
+    // 1. Calculate diff between old and new editor content
+    // 2. Convert text positions to CRDT position IDs
+    // 3. Generate insert/delete operations for each change
+    // 4. Sign operations with Ed25519 private key
+    // 5. Send operations to server via WebSocket
+    // Without this, collaborative editing is one-way (server → client only)
 
     console.log('Local edit detected (operation generation not yet implemented)');
   }

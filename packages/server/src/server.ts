@@ -113,6 +113,7 @@ export class WikiServer {
     }
 
     // Verify signature
+    // TODO: Implement actual Ed25519 verification (currently placeholder always returns true)
     const isValid = await verifySignature(message.op);
     if (!isValid) {
       console.warn('Invalid signature on operation');
@@ -126,8 +127,9 @@ export class WikiServer {
       snapshot.operations.push(message.op);
       snapshot.version++;
       
-      // TODO: Recompute content from operations using CRDT
-      // For now, just keep existing content
+      // TODO: Recompute content from operations using CRDT materialize()
+      // This requires applying all operations to a CRDTDocument instance
+      // For now, content remains static from initial snapshot
       
       await this.storage.save(client.docId, snapshot);
     }

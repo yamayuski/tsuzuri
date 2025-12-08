@@ -4,7 +4,7 @@ packages:
 
 onlyBuiltDependencies:
   - esbuild
-  - sharp
+  - sharp  # Native module requiring platform-specific build
 
 catalog:
   "@types/react": "19.2.5"

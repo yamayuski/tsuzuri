@@ -64,7 +64,8 @@ export class FileSnapshotStore implements SnapshotStore {
   }
 
   private getDocPath(docId: string): string {
-    // Sanitize docId to prevent path traversal
+    // TODO: Use more robust path sanitization (e.g., whitelist pattern or crypto hash)
+    // Current implementation prevents basic path traversal but may not handle all edge cases
     const safeId = docId.replace(/[^a-zA-Z0-9_-]/g, '_');
     return join(this.docsDir, `${safeId}.json`);
   }
