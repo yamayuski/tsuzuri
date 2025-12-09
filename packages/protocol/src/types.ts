@@ -27,7 +27,7 @@ export interface Position {
  */
 export type OperationPayload =
   | { type: 'insert'; char: string; blockType?: string }
-  | { type: 'delete' };
+  | { type: 'delete'; targetId: PositionId };
 
 /**
  * CRDT operation (before signing)

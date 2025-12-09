@@ -153,9 +153,12 @@ pnpm build
     opId: { siteId: string, counter: number },
     parent: { siteId: string, counter: number } | null,
     payload: {
-      type: 'insert' | 'delete',
-      char?: string,        // for insert
-      blockType?: string    // for insert (e.g., 'heading-1', 'paragraph')
+      type: 'insert',
+      char: string,
+      blockType?: string
+    } | {
+      type: 'delete',
+      targetId: { siteId: string, counter: number }
     },
     signature: string,      // Ed25519 signature (hex)
     publicKey: string       // Ed25519 public key (hex)

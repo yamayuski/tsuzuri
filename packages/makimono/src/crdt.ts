@@ -15,8 +15,14 @@ interface CharNode {
   id: PositionId;
   parent: PositionId | null;
   char: string;
-  deleted: boolean;
   blockType?: string; // Markdown block type (heading, list, code, etc.)
+}
+
+// ===== CRDT Delete Record =====
+
+interface DeleteRecord {
+  id: PositionId;
+  targetId: PositionId;
 }
 
 // ===== ID Ordering Strategy =====
@@ -43,12 +49,14 @@ export class CRDTDocument {
   private siteId: string;
   private counter: number;
   private nodes: Map<string, CharNode>;
+  private deletes: Map<string, DeleteRecord>;
   private ordering: IdOrderingStrategy;
 
   constructor(config: CRDTConfig) {
     this.siteId = config.siteId;
     this.counter = 0;
     this.nodes = new Map();
+    this.deletes = new Map();
     this.ordering = config.orderingStrategy || defaultOrdering;
   }
 
@@ -74,21 +82,20 @@ export class CRDTDocument {
    * Apply an operation to the CRDT
    */
   apply(op: Operation | SignedOperation): void {
-    const key = this.idToString(op.opId);
-
     if (op.payload.type === 'insert') {
+      const key = this.idToString(op.opId);
       this.nodes.set(key, {
         id: op.opId,
         parent: op.parent,
         char: op.payload.char,
-        deleted: false,
         blockType: op.payload.blockType,
       });
     } else if (op.payload.type === 'delete') {
-      const node = this.nodes.get(key);
-      if (node) {
-        node.deleted = true;
-      }
+      const deleteKey = this.idToString(op.opId);
+      this.deletes.set(deleteKey, {
+        id: op.opId,
+        targetId: op.payload.targetId,
+      });
     }
   }
 
@@ -120,12 +127,26 @@ export class CRDTDocument {
    * Generate a delete operation
    */
   generateDelete(targetId: PositionId, docId: string): Operation {
+    const opId = this.generateId();
     return {
       docId,
-      opId: targetId,
+      opId,
       parent: null,
-      payload: { type: 'delete' },
+      payload: { type: 'delete', targetId },
     };
+  }
+
+  /**
+   * Check if a node is deleted
+   */
+  private isDeleted(nodeId: PositionId): boolean {
+    const nodeKey = this.idToString(nodeId);
+    for (const deleteRecord of this.deletes.values()) {
+      if (this.idToString(deleteRecord.targetId) === nodeKey) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -137,7 +158,7 @@ export class CRDTDocument {
     const nodes = Array.from(this.nodes.values());
 
     for (const node of nodes) {
-      if (node.deleted) continue;
+      if (this.isDeleted(node.id)) continue;
 
       const parentKey = this.idToString(node.parent);
       if (!children.has(parentKey)) {
@@ -178,18 +199,27 @@ export class CRDTDocument {
    */
   getOperations(): Array<Operation> {
     const ops: Operation[] = [];
+    
+    // Add all insert operations
     for (const node of this.nodes.values()) {
-      const payload: OperationPayload = node.deleted
-        ? { type: 'delete' }
-        : { type: 'insert', char: node.char, blockType: node.blockType };
-
       ops.push({
         docId: 'unknown', // docId not stored in nodes
         opId: node.id,
         parent: node.parent,
-        payload,
+        payload: { type: 'insert', char: node.char, blockType: node.blockType },
       });
     }
+    
+    // Add all delete operations
+    for (const deleteRecord of this.deletes.values()) {
+      ops.push({
+        docId: 'unknown', // docId not stored
+        opId: deleteRecord.id,
+        parent: null,
+        payload: { type: 'delete', targetId: deleteRecord.targetId },
+      });
+    }
+    
     return ops;
   }
 

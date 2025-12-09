@@ -104,23 +104,26 @@ Creates a new character as a child of an existing position:
 
 ### Delete
 
-Marks a character as deleted (tombstone):
+Creates an immutable delete record that references a target:
 
 ```typescript
 {
   docId: "welcome",
-  opId: { siteId: "site-0", counter: 3 },  // Target to delete
+  opId: { siteId: "site-0", counter: 5 },  // Unique ID for this delete operation
   parent: null,
   payload: {
-    type: "delete"
+    type: "delete",
+    targetId: { siteId: "site-0", counter: 3 }  // ID of character to delete
   }
 }
 ```
 
 **Semantics**:
-- Marks node `opId` as deleted
-- Node remains in tree (for ordering)
-- Not included in materialized text
+- Creates independent delete operation with unique `opId`
+- References target character via `targetId`
+- Original insert operation remains immutable
+- Target is not included in materialized text
+- Delete operations are append-only and immutable
 
 ### Concurrent Operations
 

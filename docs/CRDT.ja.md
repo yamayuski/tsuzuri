@@ -104,23 +104,26 @@ function traverse(parent: PositionId | null): string {
 
 ### Delete
 
-文字を削除済みとしてマーク（トゥームストーン）：
+ターゲットを参照する不変な削除レコードを作成：
 
 ```typescript
 {
   docId: "welcome",
-  opId: { siteId: "site-0", counter: 3 },  // 削除対象
+  opId: { siteId: "site-0", counter: 5 },  // この削除操作の一意なID
   parent: null,
   payload: {
-    type: "delete"
+    type: "delete",
+    targetId: { siteId: "site-0", counter: 3 }  // 削除する文字のID
   }
 }
 ```
 
 **セマンティクス**:
-- ノード`opId`を削除済みとしてマーク
-- ノードはツリーに残る（順序付けのため）
-- 具体化されたテキストには含まれない
+- 一意な`opId`を持つ独立した削除操作を作成
+- `targetId`を通じてターゲット文字を参照
+- 元の挿入操作は不変のまま
+- ターゲットは具体化されたテキストに含まれない
+- 削除操作は追記型で不変
 
 ### 並行操作
 

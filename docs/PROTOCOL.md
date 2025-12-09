@@ -137,9 +137,8 @@ Represents a signed CRDT operation.
     - `counter`: Operation counter
   - `parent`: Parent position (or `null` for root)
   - `payload`: Operation payload
-    - `type`: `"insert"` or `"delete"`
-    - `char`: Character (for insert)
-    - `blockType`: Markdown block type (for insert)
+    - For insert: `type: "insert"`, `char: string`, `blockType?: string`
+    - For delete: `type: "delete"`, `targetId: PositionId`
   - `signature`: Ed25519 signature (hex)
   - `publicKey`: Ed25519 public key (hex)
 

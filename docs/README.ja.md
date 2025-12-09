@@ -153,9 +153,12 @@ pnpm build
     opId: { siteId: string, counter: number },
     parent: { siteId: string, counter: number } | null,
     payload: {
-      type: 'insert' | 'delete',
-      char?: string,        // insertの場合
-      blockType?: string    // insertの場合（例：'heading-1', 'paragraph'）
+      type: 'insert',
+      char: string,
+      blockType?: string
+    } | {
+      type: 'delete',
+      targetId: { siteId: string, counter: number }
     },
     signature: string,      // Ed25519署名（16進数）
     publicKey: string       // Ed25519公開鍵（16進数）

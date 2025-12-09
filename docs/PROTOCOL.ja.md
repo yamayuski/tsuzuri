@@ -137,9 +137,8 @@ ws://server:3001/ws
     - `counter`: 操作カウンター
   - `parent`: 親ポジション（ルートの場合は`null`）
   - `payload`: 操作ペイロード
-    - `type`: `"insert"`または`"delete"`
-    - `char`: 文字（insertの場合）
-    - `blockType`: マークダウンブロックタイプ（insertの場合）
+    - insertの場合：`type: "insert"`、`char: string`、`blockType?: string`
+    - deleteの場合：`type: "delete"`、`targetId: PositionId`
   - `signature`: Ed25519署名（16進数）
   - `publicKey`: Ed25519公開鍵（16進数）
 
