@@ -138,7 +138,8 @@ ws://server:3001/ws
   - `parent`: 親ポジション（ルートの場合は`null`）
   - `payload`: 操作ペイロード
     - insertの場合：`type: "insert"`、`char: string`、`blockType?: string`
-    - deleteの場合：`type: "delete"`、`targetId: PositionId`
+    - deleteの場合：`type: "delete"`
+  - 注意：`parent`フィールドのセマンティクスは操作タイプによって異なります（insert：付加点、delete：ターゲット）
   - `signature`: Ed25519署名（16進数）
   - `publicKey`: Ed25519公開鍵（16進数）
 

@@ -24,18 +24,35 @@ export interface Position {
 
 /**
  * CRDT operation payload
+ * All operation types follow the same structure for consistency and extensibility
  */
 export type OperationPayload =
-  | { type: 'insert'; char: string; blockType?: string }
-  | { type: 'delete'; targetId: PositionId };
+  | { 
+      type: 'insert'; 
+      char: string; 
+      blockType?: string;
+    }
+  | { 
+      type: 'delete';
+    };
 
 /**
  * CRDT operation (before signing)
+ * 
+ * Uniform structure for all operation types:
+ * - opId: unique identifier for this operation
+ * - parent: position in the document tree (insert: where to insert after, delete: what to delete)
+ * - payload: operation-specific data
+ * 
+ * This design ensures:
+ * - All operations have the same structure
+ * - Sequential application always produces the same result
+ * - Easy to extend with new operation types (e.g., 'modify', 'format')
  */
 export interface Operation {
   docId: string;
   opId: PositionId;
-  parent: PositionId | null;
+  parent: PositionId | null;  // For insert: parent node, for delete: target node to delete
   payload: OperationPayload;
 }
 

@@ -151,20 +151,25 @@ pnpm build
   op: {
     docId: string,
     opId: { siteId: string, counter: number },
-    parent: { siteId: string, counter: number } | null,
+    parent: { siteId: string, counter: number } | null,  // コンテキスト依存
     payload: {
       type: 'insert',
       char: string,
       blockType?: string
     } | {
-      type: 'delete',
-      targetId: { siteId: string, counter: number }
+      type: 'delete'
     },
     signature: string,      // Ed25519署名（16進数）
     publicKey: string       // Ed25519公開鍵（16進数）
   }
 }
 ```
+
+**注意**: `parent`フィールドの意味は操作タイプに依存します：
+- `insert`の場合：付加する親ノード
+- `delete`の場合：削除するターゲットノード
+
+この統一された構造により、拡張可能な操作タイプが可能になります。
 
 #### Presence (クライアント ↔ サーバー)
 

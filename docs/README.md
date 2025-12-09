@@ -151,20 +151,25 @@ pnpm build
   op: {
     docId: string,
     opId: { siteId: string, counter: number },
-    parent: { siteId: string, counter: number } | null,
+    parent: { siteId: string, counter: number } | null,  // Context-dependent
     payload: {
       type: 'insert',
       char: string,
       blockType?: string
     } | {
-      type: 'delete',
-      targetId: { siteId: string, counter: number }
+      type: 'delete'
     },
     signature: string,      // Ed25519 signature (hex)
     publicKey: string       // Ed25519 public key (hex)
   }
 }
 ```
+
+**Note**: `parent` field meaning depends on operation type:
+- For `insert`: parent node to attach to
+- For `delete`: target node to delete
+
+This uniform structure allows for extensible operation types.
 
 #### Presence (Client ↔ Server)
 

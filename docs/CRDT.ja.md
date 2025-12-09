@@ -104,26 +104,33 @@ function traverse(parent: PositionId | null): string {
 
 ### Delete
 
-ターゲットを参照する不変な削除レコードを作成：
+統一された構造を持つ不変な削除操作を作成：
 
 ```typescript
 {
   docId: "welcome",
   opId: { siteId: "site-0", counter: 5 },  // この削除操作の一意なID
-  parent: null,
+  parent: { siteId: "site-0", counter: 3 },  // 削除する文字のID
   payload: {
-    type: "delete",
-    targetId: { siteId: "site-0", counter: 3 }  // 削除する文字のID
+    type: "delete"
   }
 }
 ```
 
 **セマンティクス**:
 - 一意な`opId`を持つ独立した削除操作を作成
-- `targetId`を通じてターゲット文字を参照
+- `parent`フィールドでターゲットを参照（insertと一貫性）
 - 元の挿入操作は不変のまま
-- ターゲットは具体化されたテキストに含まれない
+- ターゲットは表示ノードから削除される
 - 削除操作は追記型で不変
+
+**統一設計**:
+すべての操作は同じ構造に従います：
+- `opId`：操作の一意識別子
+- `parent`：位置参照（insert：付加する場所、delete：削除するもの）
+- `payload`：操作固有のデータ
+
+これにより将来の拡張性が可能になります（例：`modify`、`format`操作）。
 
 ### 並行操作
 

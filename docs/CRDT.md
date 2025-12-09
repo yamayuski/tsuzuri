@@ -104,26 +104,33 @@ Creates a new character as a child of an existing position:
 
 ### Delete
 
-Creates an immutable delete record that references a target:
+Creates an immutable delete operation with uniform structure:
 
 ```typescript
 {
   docId: "welcome",
   opId: { siteId: "site-0", counter: 5 },  // Unique ID for this delete operation
-  parent: null,
+  parent: { siteId: "site-0", counter: 3 },  // ID of character to delete
   payload: {
-    type: "delete",
-    targetId: { siteId: "site-0", counter: 3 }  // ID of character to delete
+    type: "delete"
   }
 }
 ```
 
 **Semantics**:
 - Creates independent delete operation with unique `opId`
-- References target character via `targetId`
+- Uses `parent` field to reference target (consistent with insert)
 - Original insert operation remains immutable
-- Target is not included in materialized text
+- Target is removed from visible nodes
 - Delete operations are append-only and immutable
+
+**Uniform Design**:
+All operations follow the same structure:
+- `opId`: unique identifier for the operation
+- `parent`: position reference (insert: where to attach, delete: what to delete)
+- `payload`: operation-specific data
+
+This enables future extensibility (e.g., `modify`, `format` operations).
 
 ### Concurrent Operations
 

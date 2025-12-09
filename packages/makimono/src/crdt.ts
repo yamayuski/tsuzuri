@@ -18,11 +18,13 @@ interface CharNode {
   blockType?: string; // Markdown block type (heading, list, code, etc.)
 }
 
-// ===== CRDT Delete Record =====
+// ===== CRDT Operation Record =====
+// Stores applied operations in their original form for replay/sync
 
-interface DeleteRecord {
-  id: PositionId;
-  targetId: PositionId;
+interface OpRecord {
+  opId: PositionId;
+  parent: PositionId | null;
+  payload: OperationPayload;
 }
 
 // ===== ID Ordering Strategy =====
@@ -49,14 +51,14 @@ export class CRDTDocument {
   private siteId: string;
   private counter: number;
   private nodes: Map<string, CharNode>;
-  private deletes: Map<string, DeleteRecord>;
+  private operations: Map<string, OpRecord>;  // All operations for replay
   private ordering: IdOrderingStrategy;
 
   constructor(config: CRDTConfig) {
     this.siteId = config.siteId;
     this.counter = 0;
     this.nodes = new Map();
-    this.deletes = new Map();
+    this.operations = new Map();
     this.ordering = config.orderingStrategy || defaultOrdering;
   }
 
@@ -80,10 +82,22 @@ export class CRDTDocument {
 
   /**
    * Apply an operation to the CRDT
+   * 
+   * All operations are stored in their original form and can be replayed.
+   * This ensures deterministic behavior regardless of operation order.
    */
   apply(op: Operation | SignedOperation): void {
+    const key = this.idToString(op.opId);
+    
+    // Store operation for replay
+    this.operations.set(key, {
+      opId: op.opId,
+      parent: op.parent,
+      payload: op.payload,
+    });
+    
+    // Apply operation-specific effects
     if (op.payload.type === 'insert') {
-      const key = this.idToString(op.opId);
       this.nodes.set(key, {
         id: op.opId,
         parent: op.parent,
@@ -91,11 +105,14 @@ export class CRDTDocument {
         blockType: op.payload.blockType,
       });
     } else if (op.payload.type === 'delete') {
-      const deleteKey = this.idToString(op.opId);
-      this.deletes.set(deleteKey, {
-        id: op.opId,
-        targetId: op.payload.targetId,
-      });
+      // Delete operations reference their target via parent field
+      // The node itself is not removed, just marked as deleted
+      const targetKey = this.idToString(op.parent);
+      const targetNode = this.nodes.get(targetKey);
+      if (targetNode) {
+        // Remove from nodes map (tombstone pattern)
+        this.nodes.delete(targetKey);
+      }
     }
   }
 
@@ -125,32 +142,27 @@ export class CRDTDocument {
 
   /**
    * Generate a delete operation
+   * 
+   * Uses the same structure as insert:
+   * - opId: unique identifier for this delete operation
+   * - parent: the node to delete (parallel to insert's parent semantics)
+   * - payload: specifies this is a delete operation
    */
   generateDelete(targetId: PositionId, docId: string): Operation {
     const opId = this.generateId();
     return {
       docId,
       opId,
-      parent: null,
-      payload: { type: 'delete', targetId },
+      parent: targetId,  // Target to delete (consistent with insert's use of parent)
+      payload: { type: 'delete' },
     };
   }
 
   /**
-   * Check if a node is deleted
-   */
-  private isDeleted(nodeId: PositionId): boolean {
-    const nodeKey = this.idToString(nodeId);
-    for (const deleteRecord of this.deletes.values()) {
-      if (this.idToString(deleteRecord.targetId) === nodeKey) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Build a sorted list of visible characters
+   * 
+   * Only nodes that exist in the nodes map are visible.
+   * Delete operations remove nodes from the map, so this naturally handles deletions.
    */
   private buildSequence(): CharNode[] {
     // Build tree structure
@@ -158,8 +170,6 @@ export class CRDTDocument {
     const nodes = Array.from(this.nodes.values());
 
     for (const node of nodes) {
-      if (this.isDeleted(node.id)) continue;
-
       const parentKey = this.idToString(node.parent);
       if (!children.has(parentKey)) {
         children.set(parentKey, []);
@@ -196,27 +206,18 @@ export class CRDTDocument {
 
   /**
    * Get all operations (for debugging/sync)
+   * 
+   * Returns operations in their original form, allowing for deterministic replay.
    */
   getOperations(): Array<Operation> {
     const ops: Operation[] = [];
     
-    // Add all insert operations
-    for (const node of this.nodes.values()) {
+    for (const opRecord of this.operations.values()) {
       ops.push({
-        docId: 'unknown', // docId not stored in nodes
-        opId: node.id,
-        parent: node.parent,
-        payload: { type: 'insert', char: node.char, blockType: node.blockType },
-      });
-    }
-    
-    // Add all delete operations
-    for (const deleteRecord of this.deletes.values()) {
-      ops.push({
-        docId: 'unknown', // docId not stored
-        opId: deleteRecord.id,
-        parent: null,
-        payload: { type: 'delete', targetId: deleteRecord.targetId },
+        docId: 'unknown', // docId not stored in operation records
+        opId: opRecord.opId,
+        parent: opRecord.parent,
+        payload: opRecord.payload,
       });
     }
     

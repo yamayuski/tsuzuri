@@ -138,7 +138,8 @@ Represents a signed CRDT operation.
   - `parent`: Parent position (or `null` for root)
   - `payload`: Operation payload
     - For insert: `type: "insert"`, `char: string`, `blockType?: string`
-    - For delete: `type: "delete"`, `targetId: PositionId`
+    - For delete: `type: "delete"`
+  - Note: `parent` field semantics vary by operation type (insert: attachment point, delete: target)
   - `signature`: Ed25519 signature (hex)
   - `publicKey`: Ed25519 public key (hex)
 
