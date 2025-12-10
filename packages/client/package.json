@@ -1,0 +1,22 @@
+{
+  "name": "@tsuzuri/client",
+  "description": "Tsuzuri wiki client (Vite + TypeScript + Monaco)",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host=0.0.0.0",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tsuzuri/protocol": "workspace:*",
+    "@tsuzuri/makimono": "workspace:*",
+    "monaco-editor": "^0.52.2"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "name": "@tsuzuri/makimono",
-  "description": "Immutable Smart CRDT Persistent store",
+  "name": "@tsuzuri/protocol",
+  "description": "Shared types and protocol definitions for Tsuzuri wiki",
   "private": false,
   "version": "0.0.1",
   "type": "module",
@@ -16,9 +16,6 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest"
-  },
-  "dependencies": {
-    "@tsuzuri/protocol": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -11,3 +11,13 @@ _fresh/
 node_modules/
 vendor/
 .pnpm-store/
+
+# Build artifacts
+dist/
+packages/*/dist/
+*.tsbuildinfo
+
+# Data and uploads
+data/
+*.db
+*.sqlite
